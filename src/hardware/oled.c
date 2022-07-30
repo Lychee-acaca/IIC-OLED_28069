@@ -7,6 +7,7 @@
 Uint8 OLED_GRAM[128][8];
 Uint8 OLED_GRAM_PRE[8];
 Uint8 OLED_GRAM_COL[8];
+Uint8 OLED_GRAM_COL_END[8];
 
 //写指令
 void oled_cmd(char cmd)
@@ -47,6 +48,7 @@ void OLED_Init(void)
     {
         OLED_GRAM_PRE[i] = 1;
         OLED_GRAM_COL[i] = 0;
+        OLED_GRAM_COL_END[i] = 127;
     }
 
     oled_cmd(0xAE); //关闭显示
@@ -94,6 +96,8 @@ void OLED_Clear(void)
                 OLED_GRAM_PRE[j] = 1;
                 if (i < OLED_GRAM_COL[j])
                     OLED_GRAM_COL[j] = i;
+                if (i > OLED_GRAM_COL_END[j])
+                    OLED_GRAM_COL_END[j] = i;
             }
 }
 
@@ -116,10 +120,11 @@ void OLED_Refresh_Gram(void)
             oled_cmd(0xB0 + i); //设置页地址（0~7）
             oled_cmd(OLED_GRAM_COL[i] & 0x0F);     //设置显示位置—列低地址
             oled_cmd((OLED_GRAM_COL[i] >> 4) | 0x10);     //设置显示位置—列高地址
-            for (n = OLED_GRAM_COL[i]; n < 128; n++)
+            for (n = OLED_GRAM_COL[i]; n <= OLED_GRAM_COL_END[i]; n++)
                 oled_data(OLED_GRAM[n][i]);
             OLED_GRAM_PRE[i] = 0;
             OLED_GRAM_COL[i] = 0xFF;
+            OLED_GRAM_COL_END[i] = 0;
         }
 }
 
@@ -143,6 +148,8 @@ void OLED_DrawPoint(Uint8 x, Uint8 y, Uint8 t)
         OLED_GRAM_PRE[pos] = 1;
         if (x < OLED_GRAM_COL[pos])
             OLED_GRAM_COL[pos] = x;
+        if (x > OLED_GRAM_COL_END[pos])
+            OLED_GRAM_COL_END[pos] = x;
     }
 }
 
