@@ -231,3 +231,88 @@ void OLED_ShowString(Uint8 x, Uint8 y, const char *p)
         p++;
     }
 }
+
+char *Int_to_Str(Uint32 data)
+{
+    static char str[20];
+    Uint8 temp[10];
+    int i;
+    for (i = 0; i <= 19; ++i)
+        str[i] = '\0';
+    i = 0;
+    while (data > 0)
+    {
+        temp[i++] = data % 10;
+        data = data / 10;
+    }
+    if (!i)
+        strcat(str, "0");
+    for (--i; i >= 0; --i)
+        switch (temp[i])
+        {
+            case 0: strcat(str, "0"); break;
+            case 1: strcat(str, "1"); break;
+            case 2: strcat(str, "2"); break;
+            case 3: strcat(str, "3"); break;
+            case 4: strcat(str, "4"); break;
+            case 5: strcat(str, "5"); break;
+            case 6: strcat(str, "6"); break;
+            case 7: strcat(str, "7"); break;
+            case 8: strcat(str, "8"); break;
+            case 9: strcat(str, "9"); break;
+        }
+    return str;
+}
+
+char *Float_to_Str(float data,Uint8 digit)
+{
+    static char str[20];
+    Uint8 temp[10];
+    Uint32 a;
+    int i;
+    for (i = 0; i <= 19; ++i)
+        str[i]='\0';
+    for (i = 0;i < digit; ++i)
+    {
+        if(data < 1)
+        {
+            if(i == 1)
+                strcat(str,".");
+            strcat(str,"0");
+        }
+        data *= 10;
+    }
+    if (data < 1)
+    {
+        if (i == 1)
+            strcat(str,".");
+        strcat(str,"0");
+    }
+    a = data;
+    i = 0;
+    while (a>0)
+    {
+        temp[i++]=a % 10;
+        a = a / 10;
+    }
+
+    for(--i; i >= 0; --i)
+    {
+        if(i == digit - 1)
+            strcat(str, ".");
+        switch(temp[i])
+        {
+            case 0:strcat(str, "0"); break;
+            case 1:strcat(str, "1"); break;
+            case 2:strcat(str, "2"); break;
+            case 3:strcat(str, "3"); break;
+            case 4:strcat(str, "4"); break;
+            case 5:strcat(str, "5"); break;
+            case 6:strcat(str, "6"); break;
+            case 7:strcat(str, "7"); break;
+            case 8:strcat(str, "8"); break;
+            case 9:strcat(str, "9"); break;
+        }
+    }
+    return str;
+}
